@@ -61,7 +61,7 @@ function* translationRows(fileId: string) {
             const context = transFile.context[i][j];
             const params = transFile.parameters[i];
             let graphic = "";
-            if (params != null) {
+            if (params != null && params[j] != null) {
                 graphic = JSON.stringify(params[j].p);
             }
             yield new Row(context, original, graphic, initial);
