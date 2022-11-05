@@ -1,5 +1,6 @@
 import { Trans, TransFile } from "./types";
 import { parse } from 'csv-parse/browser/esm/sync';
+import { stringify } from 'csv-stringify/browser/esm/sync';
 
 class Row {
     constructor(
@@ -103,17 +104,21 @@ function renderTranslations(fileId: string) {
     previewPane.innerHTML = html;
 
     const downloadButton = document.createElement('button');
-    downloadButton.innerText = 'TSVをダウンロード';
+    downloadButton.innerText = 'CSVをダウンロード';
     downloadButton.onclick = () => doDownloadTransFile(fileId);
     previewPane.insertBefore(downloadButton, previewPane.firstChild);
 }
 
 function doDownloadTransFile(fileId: string) {
-    let tsv = ''
+    const contents = [];
     for (const row of translationRows(fileId)) {
-        const original_escaped = row.original.replace(/"/g, '""');
-        const translation_escaped = row.translation.replace(/"/g, '""');
-        tsv += `${row.context}\t"${original_escaped}"\t${row.faceGraphic}\t"${translation_escaped}"\n`;
+        contents.push([
+            fileId,
+            row.context,
+            row.original,
+            row.faceGraphic,
+            row.translation
+        ]);
     }
 
     const match = fileId.match(/.*\/([^\/.]+).*$/);
@@ -121,7 +126,7 @@ function doDownloadTransFile(fileId: string) {
         throw new Error('failed to parse file id');
     }
     const filenameBase = match[1];
-    doDownload(`${filenameBase}.tsv`, tsv);
+    doDownload(`${filenameBase}.csv`, stringify(contents));
 }
 
 function doDownload(filename: string, contents: string) {
