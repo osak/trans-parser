@@ -32,6 +32,11 @@ async function onApplyTranslation() {
     }
 }
 
+async function onDownloadTrans() {
+    await onApplyTranslation();
+    doDownload('translated.trans', JSON.stringify(trans));
+}
+
 function renderMapList() {
     if (trans == undefined) {
         throw new Error("trans is not loaded");
@@ -99,11 +104,11 @@ function renderTranslations(fileId: string) {
 
     const downloadButton = document.createElement('button');
     downloadButton.innerText = 'TSVをダウンロード';
-    downloadButton.onclick = () => doDownload(fileId);
+    downloadButton.onclick = () => doDownloadTransFile(fileId);
     previewPane.insertBefore(downloadButton, previewPane.firstChild);
 }
 
-function doDownload(fileId: string) {
+function doDownloadTransFile(fileId: string) {
     let tsv = ''
     for (const row of translationRows(fileId)) {
         const original_escaped = row.original.replace(/"/g, '""');
@@ -116,16 +121,20 @@ function doDownload(fileId: string) {
         throw new Error('failed to parse file id');
     }
     const filenameBase = match[1];
+    doDownload(`${filenameBase}.tsv`, tsv);
+}
 
+function doDownload(filename: string, contents: string) {
     const a = document.createElement('a');
-    const blob = new Blob([tsv], { type: 'text/tsv' });
+    const blob = new Blob([contents]);
     const url = window.URL.createObjectURL(blob);
     a.href = url;
-    a.download = `${filenameBase}.tsv`;
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+
 }
 
 function findIndex(transFile: TransFile, row: Row): number | null {
@@ -179,4 +188,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('translation-div').style.display = 'none';
     document.getElementById('apply-translation').onclick = onApplyTranslation;
+    document.getElementById('download-trans').onclick = onDownloadTrans;
 });
