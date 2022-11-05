@@ -93,7 +93,9 @@ function renderTranslations(fileId: string) {
 function doDownload(fileId: string) {
     let tsv = ''
     for (const row of translationRows(fileId)) {
-        tsv += `${row.context}\t"${row.original}"\t${row.faceGraphic}\t${row.dummyTranslation}\n`;
+        const original_escaped = row.original.replace(/"/g, '""');
+        const translation_escaped = row.dummyTranslation.replace(/"/g, '""');
+        tsv += `${row.context}\t"${original_escaped}"\t${row.faceGraphic}\t"${translation_escaped}"\n`;
     }
 
     const match = fileId.match(/.*\/([^\/.]+).*$/);

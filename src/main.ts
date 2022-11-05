@@ -28,7 +28,9 @@ async function main() {
             if (params != null) {
                 graphic = JSON.stringify(params[j].p);
             }
-            console.log(`${context}\t"${original}"\t${graphic}\t${initial}`);
+            const original_escaped = original.replace(/"/g, '""');
+            const initial_escaped = initial.replace(/"/g, '""');
+            console.log(`${context}\t"${original_escaped}"\t${graphic}\t"${initial_escaped}"`);
         }
     }
 }
