@@ -78,8 +78,9 @@ export interface TransFile {
     // 謎
     cacheResetOnChange: any,
     // コンテキスト固有の翻訳情報
-    // 添字はテキストに対応している
-    contextTranslation: ContextTranslation[],
+    // 1つ目の添字はテキストに対応している
+    // 2つ目の添字はcontextの2つ目の添字に対応している？
+    contextTranslation: ContextTranslation[][],
 }
 
 export interface TextParameter {

@@ -1,8 +1,18 @@
 <html>
     <head><title>Translator++ Converter</title></head>
     <body>
-        <p>Translator++が生成した.transファイルを指定してください。</p>
-        <input id="input" type="file" accept=".trans">
+        <div style="display: flex">
+            <div style="border: 1px solid; padding: 8px">
+                <p>Translator++が生成した.transファイルを指定してください。</p>
+                <input id="input" type="file" accept=".trans">
+            </div>
+            <div id="translation-div" style="margin-left: 8px; border: 1px solid; padding: 8px">
+                <p>スプレッドシートからエクスポートした.csvファイルを指定してください（複数指定可）。</p>
+                <input id="translation" type="file" accept=".csv" multiple style="display: inline-block">
+                <button id="apply-translation">適用</button>
+                <button id="download-trans">transをダウンロード</button>
+            </div>
+        </div>
         <div style="display: flex; width: 100vw">
             <div id="mapList" style="min-width: 300px; height: 90vh; overflow: scroll"></div>
             <div id="preview"></div>
