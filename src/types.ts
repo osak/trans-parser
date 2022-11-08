@@ -99,3 +99,13 @@ export interface ContextTranslation {
     // 翻訳
     translation: string,
 }
+
+export class Row {
+    constructor(
+        readonly fileId: string,
+        readonly context: string,
+        readonly original: string,
+        readonly faceGraphic: string | null,
+        readonly translation: string
+    ) {}
+}

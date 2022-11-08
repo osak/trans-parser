@@ -1,6 +1,7 @@
-import { Trans, TransFile } from "./types";
+import { Trans } from "./types";
 import { parse } from 'csv-parse/browser/esm/sync';
 import { stringify } from 'csv-stringify/browser/esm/sync';
+import { applyTranslations } from './trans';
 
 class Row {
     constructor(
@@ -29,7 +30,7 @@ async function onApplyTranslation() {
         const text = await file.text();
         const translations: string[][] = parse(text);
         const rows = translations.map((t) => new Row(t[0], t[1], t[2], t[3], t[4]));
-        applyTranslations(rows);
+        applyTranslations(trans, rows);
     }
 }
 
@@ -140,51 +141,6 @@ function doDownload(filename: string, contents: string) {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
 
-}
-
-function findIndex(transFile: TransFile, row: Row): number | null {
-    const idFromMap = transFile.indexIds[row.original];
-    if (idFromMap != null) {
-        return idFromMap;
-    }
-    console.log(`text ${row.original} not found in idFromMap. Trying context-based matching`);
-    const idFromContext = transFile.context.findIndex((ctxs) => ctxs.includes(row.context));
-    if (idFromContext != -1) {
-        console.log(`found: ${idFromContext}`);
-        return idFromContext;
-    }
-    console.warn('Not found...');
-    return null;
-}
-
-function applyTranslations(rows: Row[]) {
-    for (const row of rows) {
-        const transFile = trans.project.files[row.fileId];
-        const index = findIndex(transFile, row);
-        if (index == null) {
-            console.warn(`text ${row.original} not found in the original trans file. Skip applying this translation`);
-            continue;
-        }
-
-        const contexts = transFile.context[index];
-        if (contexts.length <= 1) {
-            transFile.data[index][1] = row.translation;
-        } else {
-            let contextTranslations = transFile.contextTranslation[index];
-            if (contextTranslations == null) {
-                contextTranslations = transFile.contextTranslation[index] = [];
-            }
-            let contextTranslation = contextTranslations.find((ct) => ct.contextStr == row.context);
-            if (contextTranslation == null) {
-                contextTranslations.push({
-                    contextStr: row.context,
-                    translation: row.translation,
-                });
-            } else {
-                contextTranslation.translation = row.translation;
-            }
-        }
-    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
