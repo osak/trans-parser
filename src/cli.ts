@@ -3,6 +3,7 @@ import { Row, Trans } from './types';
 import { ArgumentParser } from 'argparse';
 import { deserializeRows, serializeRows } from './serde';
 import { applyTranslations } from './trans';
+import { logger } from './logger';
 
 interface Arguments {
     command: 'export' | 'import';
@@ -11,45 +12,6 @@ interface Arguments {
     outputTransFile: string | null;
     verbose: number;
 }
-
-enum LogLevel {
-    FATAL = 0,
-    WARN = 1,
-    INFO = 2,
-    TRACE = 3,
-}
-
-class Logger {
-    constructor(private verbosity: number) {}
-
-    log(level: LogLevel, text: string) {
-        if (this.verbosity >= level) {
-            console.log(text);
-        }
-    }
-
-    fatal(text: string) {
-        this.log(LogLevel.FATAL, text);
-    }
-
-    warn(text: string) {
-        this.log(LogLevel.WARN, text);
-    }
-
-    info(text: string) {
-        this.log(LogLevel.INFO, text);
-    }
-
-    trace(text: string) {
-        this.log(LogLevel.TRACE, text);
-    }
-
-    setVerbosity(level: LogLevel) {
-        this.verbosity = level;
-    }
-}
-
-const logger = new Logger(LogLevel.FATAL);
 
 async function loadTransFile(path: string): Promise<Trans> {
     logger.trace('loadTransFile');
