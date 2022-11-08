@@ -24,14 +24,13 @@ npm run cli -- export --transFile /path/to/trans/file.trans --csvFile /path/to/c
 
 # Webインターフェース
 
-## コマンド
-```
-npm install
-npx webpack
-```
 
 ## 使い方
-* `dist/index.html` をブラウザで開く
+* 以下のコマンドを実行して http://localhost:8080 にアクセスする
+```
+npm install
+npx webpack-dev-server
+```
 * Translator++が作った `.trans` ファイルを指定する
 * 好きなマップを選ぶ
 * 「TSVをダウンロード」ボタンを押す
